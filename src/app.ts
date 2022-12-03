@@ -7,11 +7,11 @@ import path from 'path';
 config();
 
 const app = express();
-const { serverHttp } = connectToSocket(app);
+const { io, serverHttp } = connectToSocket(app);
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-export { serverHttp };
+export { io, serverHttp };

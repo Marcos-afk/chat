@@ -1,5 +1,6 @@
 import { serverHttp } from './app';
 import { Signale } from 'signale';
+import './socket/ChatServices';
 
 const PORT = process.env.PORT;
 const log = new Signale();
