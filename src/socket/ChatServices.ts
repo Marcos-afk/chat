@@ -12,7 +12,7 @@ import { FindMessagesByChatRoom } from '../services/findMessagesByChatRoom/FindM
 io.on('connect', socket => {
   socket.on('disconnect', () => {
     const log = new Signale();
-    log.scope('Socket').success('Socket disconnected');
+    log.scope('Socket').info('Socket disconnected');
   });
 
   socket.on('start', async data => {
