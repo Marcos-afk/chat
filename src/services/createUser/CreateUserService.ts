@@ -1,6 +1,6 @@
-import { User } from 'mongo/schemas/users/User';
 import { CreateUserServiceDto } from './CreateUserServiceDto';
 import { injectable } from 'tsyringe';
+import { User } from '../../mongo/schemas/users/User';
 
 @injectable()
 export class CreateUserService {
@@ -11,6 +11,7 @@ export class CreateUserService {
       const user = await User.findOneAndUpdate(
         { _id: userEmailAlreadyExist._id },
         { $set: { name, avatar, socket_id } },
+        { new: true },
       );
 
       return user;

@@ -4,7 +4,7 @@ import cors from 'cors';
 import path from 'path';
 import { config } from 'dotenv';
 import { connectToSocket } from './socket';
-import { connectionToDb } from 'mongo';
+import { connectionToDb } from './mongo';
 
 config();
 

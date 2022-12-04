@@ -1,7 +1,12 @@
 import { io } from '../app';
+import { container } from 'tsyringe';
+import { CreateUserService } from '../services/createUser/CreateUserService';
 
 io.on('connect', socket => {
-  socket.emit('chat_started', {
-    message: 'Seu chat foi iniciado',
+  socket.on('start', async data => {
+    const { name, email, avatar } = data;
+    const createUserService = container.resolve(CreateUserService);
+    const user = await createUserService.execute({ name, email, avatar, socket_id: socket.id });
+    console.log(user);
   });
 });
