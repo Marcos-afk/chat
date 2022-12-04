@@ -8,6 +8,7 @@ import { FindChatRoomByUsers } from '../services/findChatRoom/FindChatRoomByUser
 import { CreateMessageService } from '../services/createMessage/CreateMessageService';
 import { Signale } from 'signale';
 import { FindMessagesByChatRoom } from '../services/findMessagesByChatRoom/FindMessagesByChatRoom';
+import { FindChatRoomByIdService } from '../services/findChatRoomById/FindChatRoomByIdService';
 
 io.on('connect', socket => {
   socket.on('disconnect', () => {
@@ -54,6 +55,7 @@ io.on('connect', socket => {
 
     const findUserBySocketIdService = container.resolve(FindUserBySocketIdService);
     const createMessageService = container.resolve(CreateMessageService);
+    const findChatRoomByIdService = container.resolve(FindChatRoomByIdService);
 
     const user = await findUserBySocketIdService.execute(socket.id);
 
@@ -64,5 +66,15 @@ io.on('connect', socket => {
     });
 
     io.to(idChatRoom).emit('message', { message: createdMessage, user });
+
+    const room = await findChatRoomByIdService.execute(idChatRoom);
+
+    const userFrom = room?.idUsers.find(response => String(response._id) != String(user?._id));
+
+    io.to(userFrom?.socket_id as string).emit('notification', {
+      newMessage: true,
+      roomId: idChatRoom,
+      from: user,
+    });
   });
 });
