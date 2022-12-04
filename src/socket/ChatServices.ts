@@ -7,6 +7,7 @@ import { FindUserBySocketIdService } from '../services/findUserBySocketId/FindUs
 import { FindChatRoomByUsers } from '../services/findChatRoom/FindChatRoomByUsers';
 import { CreateMessageService } from '../services/createMessage/CreateMessageService';
 import { Signale } from 'signale';
+import { FindMessagesByChatRoom } from '../services/findMessagesByChatRoom/FindMessagesByChatRoom';
 
 io.on('connect', socket => {
   socket.on('disconnect', () => {
@@ -33,6 +34,7 @@ io.on('connect', socket => {
     const createRoomService = container.resolve(CreateRoomService);
     const findUserBySocketIdService = container.resolve(FindUserBySocketIdService);
     const findChatRoomByUsers = container.resolve(FindChatRoomByUsers);
+    const findMessagesByChatRoom = container.resolve(FindMessagesByChatRoom);
 
     const userLogged = await findUserBySocketIdService.execute(socket.id);
     let room = await findChatRoomByUsers.execute([idUser, userLogged?._id]);
@@ -41,8 +43,10 @@ io.on('connect', socket => {
       room = await createRoomService.execute([idUser, userLogged?._id]);
     }
 
+    const messages = await findMessagesByChatRoom.execute(room.idChatRoom);
+
     socket.join(room.idChatRoom);
-    callback({ room });
+    callback({ room, messages });
   });
 
   socket.on('message', async data => {
