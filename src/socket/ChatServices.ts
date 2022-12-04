@@ -2,6 +2,8 @@ import { io } from '../app';
 import { container } from 'tsyringe';
 import { CreateUserService } from '../services/createUser/CreateUserService';
 import { FindUsersServices } from '../services/findUsers/FindUsersService';
+import { CreateRoomService } from '../services/createRoom/CreateRoomService';
+import { FindUserBySocketIdService } from '../services/findUserBySocketId/FindUserBySocketIdService';
 
 io.on('connect', socket => {
   socket.on('start', async data => {
@@ -16,5 +18,16 @@ io.on('connect', socket => {
     const findUsersService = container.resolve(FindUsersServices);
     const users = await findUsersService.execute();
     callback(users);
+  });
+
+  socket.on('start_chat', async (data, callback) => {
+    const { idUser } = data;
+    const createRoomService = container.resolve(CreateRoomService);
+    const findUserBySocketIdService = container.resolve(FindUserBySocketIdService);
+
+    const userLogged = await findUserBySocketIdService.execute(socket.id);
+    const room = await createRoomService.execute([idUser, userLogged?._id]);
+
+    callback(room);
   });
 });
