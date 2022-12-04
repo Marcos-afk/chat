@@ -13,7 +13,6 @@ function onLoad() {
       src=${avatar}
     />
     <strong id="user_logged">${name}</strong>
-
   `;
 
   socket.emit('start', {
@@ -112,8 +111,7 @@ document.getElementById('users_list').addEventListener('click', e => {
 
     socket.emit('start_chat', { idUser }, response => {
       idChatRoom = response.room.idChatRoom;
-
-      response.messages.forEach(message => {
+      response.messages?.forEach(message => {
         const data = {
           message,
           user: message.to,
@@ -128,7 +126,6 @@ document.getElementById('users_list').addEventListener('click', e => {
 document.getElementById('user_message').addEventListener('keypress', e => {
   if (e.key === 'Enter') {
     const message = e.target.value;
-
     e.target.value = '';
 
     const data = {
